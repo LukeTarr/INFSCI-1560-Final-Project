@@ -1,8 +1,6 @@
-from pprint import pprint
-
 from elasticsearch import Elasticsearch
 import flask
-from flask import request, jsonify
+from flask import request, jsonify, make_response
 import json
 from flask_cors import CORS
 
@@ -271,11 +269,11 @@ if __name__ == '__main__':
 
         # Only search the index if at least one query parameter is specified
         if body['query']['bool']['must']:
-            res = str(es.search(index='my-index', body=body))
+            res = dict(es.search(index='my-index', body=body))
         else:
-            res = 'No query parameters specified'
+            res = {"error": "No query parameter specified."}
 
-        return jsonify(res)
+        return make_response(jsonify(res), 200)
 
 
     app.run(host='0.0.0.0', port=4999)
